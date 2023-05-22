@@ -29,6 +29,9 @@ print('calcs and finishing up')
 # calculate ow data from dbUSD values
 df['powUSD'] = df.powDCR * df.PriceUSD
 df['posUSD'] = df.posDCR * df.PriceUSD
+# format floats
+df.powUSD = df.powUSD.astype(float).round(2)
+df.posUSD = df.posUSD.astype(float).round(2)
 # drop price column
 df = df.drop(columns=['PriceUSD'])
 # make sure date has the right format
@@ -44,4 +47,4 @@ filename = pathStr + 'blockRewards.csv'
 if os.path.isfile(filename):
     os.remove(filename)
 # save to csv
-df.to_csv(filename,index=False, float_format='%.2f')
+df.to_csv(filename,index=False)
