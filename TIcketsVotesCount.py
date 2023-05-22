@@ -10,10 +10,6 @@ fmtt = '%Y-%m-%dT%H:%M:%S'
 dStart = pd.to_datetime(dt.date(int(2016),int(1),int(1)), utc=True, format=fmtt, errors='ignore')
 dEnd = pd.to_datetime(dt.date.today() + dt.timedelta(days=60), utc=True, format=fmtt, errors='ignore')
 
-# get price data from CM
-print('getting CM data')
-PriceUSD = utils.cm.getMetric('dcr', 'PriceUSD', dStart, dEnd)
-
 # get data from dcrdata instance
 print('getting ticket data from db')
 tickets = utils.pg.pgquery_ticketCounts()
@@ -23,8 +19,12 @@ votes = utils.pg.pgquery_voteCounts()
 # merge rewards
 df = tickets.merge(votes, left_on='date', right_on='date', how='left')
 
+# fill na
+df = df.fillna(0)
 # make sure date has the right format
 df['date'] = df['date'].dt.date
+df.tickets = df.tickets.astype(int)
+df.votes = df.votes.astype(int)
 
 # drop last row (today)
 df = df[:-1]
