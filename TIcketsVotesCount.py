@@ -15,37 +15,25 @@ print('getting CM data')
 PriceUSD = utils.cm.getMetric('dcr', 'PriceUSD', dStart, dEnd)
 
 # get data from dcrdata instance
-print('getting pow data from db')
-powReward = utils.pg.pgquery_powReward()
-print('getting pos data from db')
-posReward = utils.pg.pgquery_posReward()
-# rename columns
-posReward = posReward.rename(columns={"date": "date", "value": "posDCR"})
-powReward = powReward.rename(columns={"date": "date", "value": "powDCR"})
+print('getting ticket data from db')
+tickets = utils.pg.pgquery_ticketCounts()
+print('getting votes data from db')
+votes = utils.pg.pgquery_voteCounts()
+
 # merge rewards
-df = posReward.merge(powReward, left_on='date', right_on='date', how='left')
-df = df.merge(PriceUSD, left_on='date', right_on='date', how='left')
-print('calcs and finishing up')
-# calculate ow data from dbUSD values
-df['powUSD'] = df.powDCR * df.PriceUSD
-df['posUSD'] = df.posDCR * df.PriceUSD
-# format floats
-df.powUSD = df.powUSD.astype(float).round(2)
-df.posUSD = df.posUSD.astype(float).round(2)
-# drop price column
-df = df.drop(columns=['PriceUSD'])
+df = tickets.merge(votes, left_on='date', right_on='date', how='left')
+
 # make sure date has the right format
 df['date'] = df['date'].dt.date
 
 # drop last row (today)
 df = df[:-1]
-
 # save to CSV
 basePathStr = "./data/"
 pathStr = basePathStr
 if not os.path.exists(pathStr):
     os.makedirs(pathStr)
-filename = pathStr + 'blockRewards.csv'
+filename = pathStr + 'ticketsVotes.csv'
 # remove file if it exists
 if os.path.isfile(filename):
     os.remove(filename)

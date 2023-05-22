@@ -112,3 +112,43 @@ def pgquery_posReward():
     # fix date formats
     output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
     return output
+
+def pgquery_ticketCounts():
+    # this function uses the dcrdata_query func to obtain daily ticket counts
+    #- date
+    #- tickets
+
+    query = """
+    Select 
+        date(bdb.time) as date,
+        count(tdb.id) as tickets
+    from public.blocks as bdb
+    left join public.tickets as tdb
+        on tdb.block_height = bdb.height 
+    group by date
+    order by date asc
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output
+
+def pgquery_voteCounts():
+    # this function uses the dcrdata_query func to obtain daily ticket counts
+    #- date
+    #- tickets
+
+    query = """
+    Select 
+        date(votes.block_time) as date,
+        count(votes.id) as votes
+    from public.votes as votes
+    group by date
+    order by date asc
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output

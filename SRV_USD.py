@@ -33,7 +33,16 @@ df = df.merge(CapMrktCurUSD, left_on='date', right_on='date', how='left')
 # purge
 del tickets,poolval
 
+# formatting
 df['date'] = df['date'].dt.date
+df.SRV = df.SRV.astype(float).round(2)
+df.SplyCur = df.SplyCur.astype(float).round(2)
+df.poolval = df.poolval.astype(float).round(2)
+df.CapRealUSD = df.CapRealUSD.astype(float).round(2)
+df.CapMrktCurUSD = df.CapMrktCurUSD.astype(float).round(2)
+
+# drop last row (today)
+df = df[:-1]
 
 # save to CSV
 basePathStr = "./data/"
