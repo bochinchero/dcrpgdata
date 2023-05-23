@@ -9,3 +9,6 @@ subprocess.run(["python3", "SRV_USD.py"])
 
 print('Running Ticket and Votes Counts')
 subprocess.run(["python3", "TicketsVotesCount.py"])
+
+print('Running Supply')
+subprocess.run(["python3", "Supply.py"])

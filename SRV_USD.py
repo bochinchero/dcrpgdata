@@ -11,9 +11,6 @@ dStart = pd.to_datetime(dt.date(int(2016),int(1),int(1)), utc=True, format=fmtt,
 dEnd = pd.to_datetime(dt.date.today() + dt.timedelta(days=60), utc=True, format=fmtt, errors='ignore')
 
 # get price data from CM
-PriceUSD = utils.cm.getMetric('dcr', 'PriceUSD', dStart, dEnd)
-SplyCur = utils.cm.getMetric('dcr','SplyCur',dStart,dEnd)
-CapMrktCurUSD = utils.cm.getMetric('dcr','CapMrktCurUSD',dStart,dEnd)
 CapRealUSD = utils.cm.getMetric('dcr','CapRealUSD',dStart,dEnd)
 
 # get ticket data from dcrdata instance
@@ -26,20 +23,18 @@ df = utils.metrics.realvalue(tickets,PriceUSD.rename(columns={"date": "date", "P
 df = df.rename(columns={"date": "date", "realcap": "SRV"})
 
 # merge other metrics
-df = df.merge(SplyCur, left_on='date', right_on='date', how='left')
 df = df.merge(poolval, left_on='date', right_on='date', how='left')
 df = df.merge(CapRealUSD, left_on='date', right_on='date', how='left')
-df = df.merge(CapMrktCurUSD, left_on='date', right_on='date', how='left')
+
 # purge
 del tickets,poolval
 
 # formatting
 df['date'] = df['date'].dt.date
 df.SRV = df.SRV.astype(float).round(2)
-df.SplyCur = df.SplyCur.astype(float).round(2)
 df.poolval = df.poolval.astype(float).round(2)
 df.CapRealUSD = df.CapRealUSD.astype(float).round(2)
-df.CapMrktCurUSD = df.CapMrktCurUSD.astype(float).round(2)
+
 
 # drop last row (today)
 df = df[:-1]

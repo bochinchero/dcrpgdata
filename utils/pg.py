@@ -135,9 +135,9 @@ def pgquery_ticketCounts():
     return output
 
 def pgquery_voteCounts():
-    # this function uses the dcrdata_query func to obtain daily ticket counts
+    # this function uses the dcrdata_query func to obtain daily vote counts
     #- date
-    #- tickets
+    #- votes
 
     query = """
     Select 
@@ -151,4 +151,26 @@ def pgquery_voteCounts():
     output = pgquery(query)
     # fix date formats
     output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output
+
+def pgquery_Supply():
+    # this function uses the dcrdata_query func to obtain supply
+    #- date
+    #- new supply
+    #- total supply
+
+    query = """
+    Select 
+        date(vi.block_time) as date,
+        sum(cast(vi.value_in as numeric)) as newsply
+    from public.vins as vi
+    where prev_tx_hash = '0000000000000000000000000000000000000000000000000000000000000000'
+    group by date
+    order by date asc
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    output['totsply'] = output.newsply.cumsum()
     return output
