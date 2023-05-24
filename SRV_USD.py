@@ -12,7 +12,7 @@ dEnd = pd.to_datetime(dt.date.today() + dt.timedelta(days=60), utc=True, format=
 
 # get price data from CM
 CapRealUSD = utils.cm.getMetric('dcr','CapRealUSD',dStart,dEnd)
-
+PriceUSD = utils.cm.getMetric('dcr','PriceUSD',dStart,dEnd)
 # get ticket data from dcrdata instance
 tickets = utils.pg.pgquery_utxo_tickets()
 # get poolval data from dcrdata instance
