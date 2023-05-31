@@ -23,7 +23,7 @@ df['totsply'] = df.totsply /100000000
 df.newsply = df.newsply.astype(float).round(2)
 df.totsply = df.totsply.astype(float).round(2)
 # drop last row (today)
-df = df[:-1]
+df.drop(df.tail(1).index, inplace=True)
 # save to CSV
 basePathStr = "./data/"
 pathStr = basePathStr

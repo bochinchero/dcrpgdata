@@ -38,7 +38,7 @@ df = df.drop(columns=['PriceUSD'])
 df['date'] = df['date'].dt.date
 
 # drop last row (today)
-df = df[:-1]
+df.drop(df.tail(1).index, inplace=True)
 
 # save to CSV
 basePathStr = "./data/"

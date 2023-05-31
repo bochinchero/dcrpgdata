@@ -27,7 +27,7 @@ df.tickets = df.tickets.astype(int)
 df.votes = df.votes.astype(int)
 
 # drop last row (today)
-df = df[:-1]
+df.drop(df.tail(1).index, inplace=True)
 # save to CSV
 basePathStr = "./data/"
 pathStr = basePathStr
