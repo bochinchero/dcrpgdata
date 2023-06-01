@@ -19,9 +19,9 @@ print('getting pow data from db')
 powReward = utils.pg.pgquery_powReward()
 print('getting pos data from db')
 posReward = utils.pg.pgquery_posReward()
-print('getting dec tres from db')
+print('getting dec. tres data from db')
 decTres = utils.pg.pgquery_decTresIssuance()
-print('getting pos data from db')
+print('getting legacy tres data from db')
 legTres = utils.pg.pgquery_legTresIssuance()
 # rename columns
 posReward = posReward.rename(columns={"date": "date", "value": "posDCR"})
@@ -33,7 +33,7 @@ df = df.merge(legTres, left_on='date', right_on='date', how='left')
 df = df.merge(PriceUSD, left_on='date', right_on='date', how='left')
 print('calcs and finishing up')
 df = df.fillna(0)
-df['tresDCR'] = df.decTres + df.legTres
+df['tresDCR'] = df.dectres + df.legtres
 # calculate ow data from dbUSD values
 df['powUSD'] = df.powDCR * df.PriceUSD
 df['posUSD'] = df.posDCR * df.PriceUSD
@@ -42,7 +42,7 @@ df['tresUSD'] = df.tresDCR * df.PriceUSD
 df.powUSD = df.powUSD.astype(float).round(2)
 df.posUSD = df.posUSD.astype(float).round(2)
 # drop price column
-df = df.drop(columns=['PriceUSD','decTres','legTres'])
+df = df.drop(columns=['PriceUSD','dectres','legtres'])
 # make sure date has the right format
 df['date'] = df['date'].dt.date
 # fill na with 0
