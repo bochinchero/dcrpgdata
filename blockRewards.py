@@ -42,7 +42,8 @@ df.posUSD = df.posUSD.astype(float).round(2)
 df = df.drop(columns=['PriceUSD'])
 # make sure date has the right format
 df['date'] = df['date'].dt.date
-
+# fill na with 0
+df = df.fillna(0)
 # drop last row (today)
 df.drop(df.tail(1).index, inplace=True)
 
