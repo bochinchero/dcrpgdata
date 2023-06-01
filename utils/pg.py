@@ -203,7 +203,7 @@ def pgquery_legTresIssuance():
     query = """
     Select
     date(tx.time) as date,
-    trunc(sum(cast(vo.value as numeric)/100000000),2) as value
+    trunc(sum(cast(vo.value as numeric)/100000000),2) as legTres
     from transactions as tx left join vouts as vo
     on tx.tx_hash = vo.tx_hash 
     where tx.tx_type = 0 and block_index = 0 and tx.is_valid and tx.is_mainchain and tx.block_height > 1 and vo.tx_index = 0 and vo.script_addresses='{Dcur2mcGjmENx4DhNqDctW5wJCVyT3Qeqkx}'

@@ -32,14 +32,17 @@ df = df.merge(decTres, left_on='date', right_on='date', how='left')
 df = df.merge(legTres, left_on='date', right_on='date', how='left')
 df = df.merge(PriceUSD, left_on='date', right_on='date', how='left')
 print('calcs and finishing up')
+df = df.fillna(0)
+df['tresDCR'] = df.decTres + df.legTres
 # calculate ow data from dbUSD values
 df['powUSD'] = df.powDCR * df.PriceUSD
 df['posUSD'] = df.posDCR * df.PriceUSD
+df['tresUSD'] = df.tresDCR * df.PriceUSD
 # format floats
 df.powUSD = df.powUSD.astype(float).round(2)
 df.posUSD = df.posUSD.astype(float).round(2)
 # drop price column
-df = df.drop(columns=['PriceUSD'])
+df = df.drop(columns=['PriceUSD','decTres','legTres'])
 # make sure date has the right format
 df['date'] = df['date'].dt.date
 # fill na with 0
