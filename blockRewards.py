@@ -19,11 +19,17 @@ print('getting pow data from db')
 powReward = utils.pg.pgquery_powReward()
 print('getting pos data from db')
 posReward = utils.pg.pgquery_posReward()
+print('getting dec tres from db')
+decTres = utils.pg.pgquery_decTresIssuance()
+print('getting pos data from db')
+legTres = utils.pg.pgquery_legTresIssuance()
 # rename columns
 posReward = posReward.rename(columns={"date": "date", "value": "posDCR"})
 powReward = powReward.rename(columns={"date": "date", "value": "powDCR"})
 # merge rewards
 df = posReward.merge(powReward, left_on='date', right_on='date', how='left')
+df = df.merge(decTres, left_on='date', right_on='date', how='left')
+df = df.merge(legTres, left_on='date', right_on='date', how='left')
 df = df.merge(PriceUSD, left_on='date', right_on='date', how='left')
 print('calcs and finishing up')
 # calculate ow data from dbUSD values

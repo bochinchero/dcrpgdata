@@ -174,3 +174,43 @@ def pgquery_Supply():
     output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
     output['totsply'] = output.newsply.cumsum()
     return output
+
+
+def pgquery_decTresIssuance():
+    # this function uses the dcrdata_query func to obtain the issuance to the decentralized treasury
+    #- date
+    #- new supply
+
+    query = """
+    Select
+    date(tx.time) as date,
+    trunc(sum(cast(tx.sent as numeric)/100000000),2) as decTres
+    from transactions as tx
+    where tx.tx_type = 6 and tx.is_valid and tx.is_mainchain and tx.block_height > 1
+    group by date
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output
+
+def pgquery_legTresIssuance():
+    # this function uses the dcrdata_query func to obtain the issuance to the legacy treasury
+    #- date
+    #- new supply
+
+    query = """
+    Select
+    date(tx.time) as date,
+    trunc(sum(cast(vo.value as numeric)/100000000),2) as value
+    from transactions as tx left join vouts as vo
+    on tx.tx_hash = vo.tx_hash 
+    where tx.tx_type = 0 and block_index = 0 and tx.is_valid and tx.is_mainchain and tx.block_height > 1 and vo.tx_index = 0 and vo.script_addresses='{Dcur2mcGjmENx4DhNqDctW5wJCVyT3Qeqkx}'
+    group by date
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output
