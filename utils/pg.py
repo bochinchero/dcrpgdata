@@ -214,3 +214,32 @@ def pgquery_legTresIssuance():
     # fix date formats
     output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
     return output
+
+def pgquery_blockVers():
+    # this function uses the dcrdata_query func to obtain the daily amount of blocks for each block version
+
+    query = """
+    SELECT date(time) as date, version, count(version) FROM public.blocks
+    group by date, version
+    ORDER BY date ASC
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output
+
+def pgquery_voteVers():
+    # this function uses the dcrdata_query func to obtain the daily amount of blocks for each block version
+
+    query = """
+    SELECT date(block_time) as date, version, count(version) FROM public.votes
+    group by date, version
+    ORDER BY date ASC
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output
+
