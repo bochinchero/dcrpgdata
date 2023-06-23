@@ -12,3 +12,9 @@ subprocess.run(["python3", "TicketsVotesCount.py"])
 
 print('Running Supply')
 subprocess.run(["python3", "Supply.py"])
+
+print('Running Block versions')
+subprocess.run(["python3", "blockVersions.py"])
+
+print('Running Vote versions')
+subprocess.run(["python3", "voteVersions.py"])
