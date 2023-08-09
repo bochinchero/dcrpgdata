@@ -243,3 +243,35 @@ def pgquery_voteVers():
     output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
     return output
 
+def pgquery_utxo_set(filter=None):
+    # this function uses the dcrdata_query func to obtain all of the utxo data for realised value calcs
+    # input paremter is the filter for the utxo type, if none it'll get everything
+    #   - Fund Date
+    #   - Spend Date
+    #   - Value
+    # if filter is populated it will check for that script_type
+    if filter is not None:
+        qf = "and vouts.script_type = '" + filter + "'"
+    else:
+        qf = ''
+
+    query = """
+    Select  date(fund_tx.block_time)                      as fund_date, 
+            ((cast(vouts.value as real)/100000000)) as value, 
+            date(spend_tx.block_time)                     as spend_date
+
+    From public.vouts as vouts
+    left join public.transactions as fund_tx
+    	on fund_tx.tx_hash = vouts.tx_hash
+    left join public.transactions as spend_tx
+    	on spend_tx.id = vouts.spend_tx_row_id
+
+    where value > 0 """ + qf  + """
+    order by vouts.id asc
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['fund_date'] = pd.to_datetime(output.fund_date, utc=True, format=fmtt, errors='ignore')
+    output['spend_date'] = pd.to_datetime(output.spend_date, utc=True, format=fmtt, errors='ignore')
+    return output

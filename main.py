@@ -18,3 +18,6 @@ subprocess.run(["python3", "blockVersions.py"])
 
 print('Running Vote versions')
 subprocess.run(["python3", "voteVersions.py"])
+
+print('Running Realised Value BTC Script')
+subprocess.run(["python3", "SRV_BTC.py"])
