@@ -23,19 +23,22 @@ del utxos
 
 # get ticket data from dcrdata instance
 tickets = utils.pg.pgquery_utxo_tickets()
-# get poolval data from dcrdata instance
-poolval = utils.pg.pgquery_poolval()
 
 # calculate staked realised value
 df = utils.metrics.realvalue(tickets,PriceBTC.rename(columns={"date": "date", "PriceBTC": "price"}))
+# purge
+del tickets
 df = df.rename(columns={"date": "date", "realcap": "SRV"})
 
+# get poolval data from dcrdata instance
+poolval = utils.pg.pgquery_poolval()
 # merge other metrics
 df = df.merge(poolval, left_on='date', right_on='date', how='left')
+del poolval
+
+
 df = df.merge(CapRealBTC, left_on='date', right_on='date', how='left')
 
-# purge
-del tickets,poolval
 
 # formatting
 df['date'] = df['date'].dt.date
