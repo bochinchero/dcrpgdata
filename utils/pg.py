@@ -275,3 +275,16 @@ def pgquery_utxo_set(filter=None):
     output['fund_date'] = pd.to_datetime(output.fund_date, utc=True, format=fmtt, errors='ignore')
     output['spend_date'] = pd.to_datetime(output.spend_date, utc=True, format=fmtt, errors='ignore')
     return output
+
+def pgquery_powRewardAddr():
+    query = """
+    SELECT date(block_time) as date, block_height, right(cast(script_addresses as varchar(7)),6) as address, value/1e8 as reward FROM vouts vo 
+    INNER JOIN transactions t ON vo.tx_hash=t.tx_hash 
+    WHERE t.is_valid=true AND t.is_mainchain=true AND block_index = 0 and tx_type = 0 and vo.value >0 and script_type = 'pubkeyhash' and block_height > 1
+    order by block_height asc
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output
