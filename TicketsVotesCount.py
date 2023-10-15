@@ -16,8 +16,10 @@ tickets = utils.pg.pgquery_ticketCounts()
 print('getting votes data from db')
 votes = utils.pg.pgquery_voteCounts()
 
-# merge rewards
-df = tickets.merge(votes, left_on='date', right_on='date', how='left')
+# merge tickets and votes
+df = pd.date_range(start=dStart,end=dEnd).to_frame(index=True, name='date')
+df = df.merge(votes, left_on='date', right_on='date', how='left')
+df = df.merge(tickets, left_on='date', right_on='date', how='left')
 
 # fill na
 df = df.fillna(0)
