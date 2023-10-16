@@ -278,7 +278,7 @@ def pgquery_utxo_set(filter=None):
 
 def pgquery_powRewardAddr():
     query = """
-    SELECT date(block_time) as date, block_height, right(cast(script_addresses as varchar(7)),6) as address, value/1e8 as reward FROM vouts vo 
+    SELECT date(block_time) as date, block_height, substring(cast(vo.script_addresses as varchar),2,35) as address, value/1e8 as reward FROM vouts vo 
     INNER JOIN transactions t ON vo.tx_hash=t.tx_hash 
     WHERE t.is_valid=true AND t.is_mainchain=true AND block_index = 0 and tx_type = 0 and vo.value >0 and script_type = 'pubkeyhash' and block_height > 1
     order by block_height asc
