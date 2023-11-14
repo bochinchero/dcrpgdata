@@ -339,3 +339,22 @@ def pgquery_decTresOutflows():
     # fix date formats
     output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
     return output
+
+def pgquery_decTresInflows():
+    # this function uses the dcrdata_query func to obtain the issuance to the decentralized treasury
+    #- date
+    #- new supply
+
+    query = """
+    Select
+    date(tx.time) as date,
+    trunc(sum(cast(tx.sent as numeric)/100000000),2) as received
+    from transactions as tx
+    where (tx.tx_type = 6 or tx.tx_type = 4) and tx.is_valid and tx.is_mainchain and tx.block_height > 1
+    group by date
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output

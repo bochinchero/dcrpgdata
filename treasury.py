@@ -14,8 +14,7 @@ date_rng = pd.date_range(start=dStart, end=dEnd, freq='d')
 datedf = pd.DataFrame(date_rng, columns=['date'])
 
 # get data from dcrdata instance
-dt_in = utils.pg.pgquery_decTresIssuance()
-dt_in = dt_in.rename(columns={"date": "date", "dectres": "received"})
+dt_in = utils.pg.pgquery_decTresInflows()
 dt_out = utils.pg.pgquery_decTresOutflows()
 dtres = datedf.merge(dt_in, left_on='date', right_on='date', how='left')
 dtres = dtres.merge(dt_out, left_on='date', right_on='date', how='left')
