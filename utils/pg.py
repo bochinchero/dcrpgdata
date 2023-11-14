@@ -288,3 +288,54 @@ def pgquery_powRewardAddr():
     # fix date formats
     output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
     return output
+
+def pgquery_legTresInflows():
+    query = """
+    Select
+    date(block_time) as date,
+    trunc(sum(cast(value as numeric)/100000000),2) as received
+    from addresses
+    where is_funding and valid_mainchain and address='Dcur2mcGjmENx4DhNqDctW5wJCVyT3Qeqkx'
+    group by date
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output
+
+
+def pgquery_legTresOutflows():
+    query = """
+    Select
+    date(block_time) as date,
+    trunc(sum(cast(value as numeric)/100000000),2) as sent
+    from addresses
+    where (not is_funding) and valid_mainchain and address='Dcur2mcGjmENx4DhNqDctW5wJCVyT3Qeqkx'
+    group by date
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output
+
+
+def pgquery_decTresOutflows():
+    # this function uses the dcrdata_query func to obtain the issuance to the decentralized treasury
+    #- date
+    #- new supply
+
+    query = """
+    Select
+    date(tx.time) as date,
+    trunc(sum(cast(tx.sent as numeric)/100000000),2) as sent
+    from transactions as tx
+    where tx.tx_type = 5 and tx.is_valid and tx.is_mainchain and tx.block_height > 1
+    group by date
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output

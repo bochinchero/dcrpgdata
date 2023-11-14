@@ -18,3 +18,6 @@ subprocess.run(["python3", "blockVersions.py"])
 
 print('Running Vote versions')
 subprocess.run(["python3", "voteVersions.py"])
+
+print('treasury data')
+subprocess.run(["python3", "treasury.py"])
