@@ -22,7 +22,7 @@ dtres = dtres.merge(dt_out, left_on='date', right_on='date', how='left')
 
 dtres = dtres.fillna(0)
 dtres['net'] = dtres.received - dtres.sent
-
+dtres['balance'] = dtres['net'].shift(1).cumsum()
 
 
 lt_in = utils.pg.pgquery_legTresInflows()
@@ -31,8 +31,8 @@ ltres = datedf.merge(lt_in, left_on='date', right_on='date', how='left')
 ltres = ltres.merge(lt_out, left_on='date', right_on='date', how='left')
 
 ltres = ltres.fillna(0)
-print(ltres)
 ltres['net'] = ltres.received - ltres.sent
+ltres['balance'] = ltres['net'].shift(1).cumsum()
 
 # save to CSV
 basePathStr = "./data/"
