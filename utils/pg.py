@@ -358,3 +358,23 @@ def pgquery_decTresInflows():
     # fix date formats
     output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
     return output
+
+
+def pgquery_missexpTickets():
+    # this function uses the dcrdata_query func to obtain misssed and expired tickets per day
+    query = """
+    Select 
+    date(bdb.time) as date,
+    count(case tdb.pool_status when 2 then 1 else null end) as Expired,
+    count(case tdb.pool_status when 3 then 1 else null end) as Missed
+    from public.blocks as bdb
+    left join public.tickets as tdb
+    on tdb.spend_height = bdb.height 
+    group by date
+    order by date asc
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output

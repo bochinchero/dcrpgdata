@@ -15,11 +15,14 @@ print('getting ticket data from db')
 tickets = utils.pg.pgquery_ticketCounts()
 print('getting votes data from db')
 votes = utils.pg.pgquery_voteCounts()
+print('getting missed and expired tickets')
+revoked = utils.pg.pgquery_missexpTickets()
 
 # merge tickets and votes
 df = pd.date_range(start=dStart,end=dEnd).to_frame(index=True, name='date')
 df = df.merge(votes, left_on='date', right_on='date', how='left')
 df = df.merge(tickets, left_on='date', right_on='date', how='left')
+df = df.merge(revoked, left_on='date', right_on='date', how='left')
 
 # fill na
 df = df.fillna(0)
@@ -27,6 +30,8 @@ df = df.fillna(0)
 df['date'] = df['date'].dt.date
 df.tickets = df.tickets.astype(int)
 df.votes = df.votes.astype(int)
+df.missed = df.missed.astype(int)
+df.expired = df.expired.astype(int)
 
 # drop last row (today)
 df.drop(df.tail(1).index, inplace=True)
