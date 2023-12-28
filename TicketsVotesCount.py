@@ -32,6 +32,7 @@ df.tickets = df.tickets.astype(int)
 df.votes = df.votes.astype(int)
 df.missed = df.missed.astype(int)
 df.expired = df.expired.astype(int)
+df.revoked = df.revoked.astype(int)
 
 # drop last row (today)
 df.drop(df.tail(1).index, inplace=True)

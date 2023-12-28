@@ -366,7 +366,8 @@ def pgquery_missexpTickets():
     Select 
     date(bdb.time) as date,
     count(case tdb.pool_status when 2 then 1 else null end) as Expired,
-    count(case tdb.pool_status when 3 then 1 else null end) as Missed
+    count(case tdb.pool_status when 3 then 1 else null end) as Missed,
+    count(case tdb.spend_type when 1 then 1 else null end) as Revoked
     from public.blocks as bdb
     left join public.tickets as tdb
     on tdb.spend_height = bdb.height 
