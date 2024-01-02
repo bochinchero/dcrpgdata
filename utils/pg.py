@@ -408,7 +408,7 @@ def pgquery_dailyblocks():
     date(bdb.time) as date,
     min(bdb.height) as first_block,
     max(bdb.height) as last_block,
-    count(bdb.id) as block_count,
+    count(bdb.id) as block_count
     from public.blocks as bdb
     group by date
     order by date asc
