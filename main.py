@@ -22,6 +22,9 @@ subprocess.run(["python3", "voteVersions.py"])
 print('treasury data')
 subprocess.run(["python3", "treasury.py"])
 
+print('hashrate data')
+subprocess.run(["python3", "nethash.py"])
+
 print('pow Reward Dist')
 subprocess.run(["python3", "powRewardDist.py"])
 
