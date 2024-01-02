@@ -9,8 +9,8 @@ import subprocess
 from subprocess import Popen, PIPE
 
 def getNetHash(row):
-    execStr = ' getnetworkhashps ' + str(row['block_count']) + ' ' + str(row['last_block'])
-    process = Popen(['dcrctl', execStr], stdout=PIPE)
+    execStr = 'getnetworkhashps ' + str(row['block_count']) + ' ' + str(row['last_block'])
+    process = Popen(['dcrctl', 'getnetworkhashps', row['block_count'],row['last_block']], stdout=PIPE)
     (output, err) = process.communicate()
     exit_code = process.wait()
     return output
