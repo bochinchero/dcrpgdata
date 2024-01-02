@@ -21,3 +21,9 @@ subprocess.run(["python3", "voteVersions.py"])
 
 print('treasury data')
 subprocess.run(["python3", "treasury.py"])
+
+print('pow Reward Dist')
+subprocess.run(["python3", "powRewardDist.py"])
+
+print('BTC SRV')
+subprocess.run(["python3", "SRV_BTC.py"])
