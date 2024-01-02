@@ -13,7 +13,7 @@ def getNetHash(row):
     process = Popen(['dcrctl', 'getnetworkhashps', str(row['block_count']),str(row['last_block'])], stdout=PIPE)
     (output, err) = process.communicate()
     exit_code = process.wait()
-    return output
+    return int(output)
 
 # get data from dcrdata instance
 print('getting pow data from db')
