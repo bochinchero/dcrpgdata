@@ -379,3 +379,42 @@ def pgquery_missexpTickets():
     # fix date formats
     output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
     return output
+
+def pgquery_missexpTickets():
+    # this function uses the dcrdata_query func to obtain misssed and expired tickets per day
+    query = """
+    Select 
+    date(bdb.time) as date,
+    count(case tdb.pool_status when 2 then 1 else null end) as Expired,
+    count(case tdb.pool_status when 3 then 1 else null end) as Missed,
+    count(case tdb.spend_type when 1 then 1 else null end) as Revoked
+    from public.blocks as bdb
+    left join public.tickets as tdb
+    on tdb.spend_height = bdb.height 
+    group by date
+    order by date asc
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output
+
+
+def pgquery_dailyblocks():
+    # this function uses the dcrdata_query func to obtain daily blocks (first last and count)
+    query = """
+    Select 
+    date(bdb.time) as date,
+    min(bdb.height) as first_block,
+    max(bdb.height) as last_block,
+    count(bdb.id) as block_count,
+    from public.blocks as bdb
+    group by date
+    order by date asc
+    """
+    # execute query on dcrdata pgdb
+    output = pgquery(query)
+    # fix date formats
+    output['date'] = pd.to_datetime(output.date, utc=True, format=fmtt, errors='ignore')
+    return output
